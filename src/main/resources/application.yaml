@@ -1,0 +1,8 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/assets
+    username: win
+    password: winners123
+  jpa:
+    hibernate:
+      ddl-auto: update
