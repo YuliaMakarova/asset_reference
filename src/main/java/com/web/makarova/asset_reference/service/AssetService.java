@@ -7,9 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -31,44 +32,30 @@ public class AssetService {
         this.currencyService = currencyService;
     }
 
-    public List<Asset> getAllAssets(int page) {
-        Page<Asset> assetPage = assetPagingAndSortingRepository.findAll(PageRequest.of(page, size));
-        return assetPage.getContent();
+    public Page<Asset> getAllAssets(int page) {
+        return assetPagingAndSortingRepository.findAll(PageRequest.of(page, size));
     }
 
-    public List<Asset> getAssetsByName(String name, int page) {
-        Page<Asset> assetPage = assetPagingAndSortingRepository.findByNameContainingIgnoreCase(name,
-                PageRequest.of(page, size));
-        return assetPage.getContent();
+    public Page<Asset> getAllAssetsSorted(String sortBy, int page) {
+        Sort sort = Sort.by(sortBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
+        return assetPagingAndSortingRepository.findAll(pageable);
     }
 
-    public List<Asset> getAssetsByIsin(String isin, int page) {
-        Page<Asset> assetPage = assetPagingAndSortingRepository.findByIsinContainingIgnoreCase(isin,
-                PageRequest.of(page, size));
-        return assetPage.getContent();
-    }
-
-    public List<Asset> getAssetsBloombergTicker(String bloombergTicker, int page) {
-        Page<Asset> assetPage = assetPagingAndSortingRepository.
-                findByBloombergTickerContainingIgnoreCase(bloombergTicker, PageRequest.of(page, size));
-        return assetPage.getContent();
-    }
-
-    public List<Asset> getAssetsCurrencyName(String currencyName, int page) {
-        Page<Asset> assetPage = assetPagingAndSortingRepository.findByCurrency_NameContainingIgnoreCase(currencyName,
-                PageRequest.of(page, size));
-        return assetPage.getContent();
-    }
-
-    public List<Asset> getAssetsExchangeName(String exchangeName, int page) {
-        Page<Asset> assetPage = assetPagingAndSortingRepository.findByExchange_NameContainingIgnoreCase(exchangeName,
-                PageRequest.of(page, size));
-        return assetPage.getContent();
-    }
-
-    public Asset getAssetById(Long id) {
-        Optional<Asset> optionalAsset = assetCrudRepository.findById(id);
-        return optionalAsset.orElse(null);
+    public Page<Asset> getAssetsByField(String field, String value, int page) {
+        return switch (field.toLowerCase()) {
+            case "name" -> assetPagingAndSortingRepository.findByNameContainingIgnoreCase(value,
+                    PageRequest.of(page, size));
+            case "isin" -> assetPagingAndSortingRepository.findByIsinContainingIgnoreCase(value,
+                    PageRequest.of(page, size));
+            case "bloombergticker" -> assetPagingAndSortingRepository.findByBloombergTickerContainingIgnoreCase(value,
+                    PageRequest.of(page, size));
+            case "currency.name" -> assetPagingAndSortingRepository.findByCurrency_NameContainingIgnoreCase(value,
+                    PageRequest.of(page, size));
+            case "exchange.name" -> assetPagingAndSortingRepository.findByExchange_NameContainingIgnoreCase(value,
+                    PageRequest.of(page, size));
+            default -> assetPagingAndSortingRepository.findAll(PageRequest.of(page, size));
+        };
     }
 
     public Asset createAsset(Long exchangeId, Long currencyId, String isin, String bloombergTicker, String name) {

@@ -7,9 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -26,21 +27,24 @@ public class CurrencyService {
         this.currencyPagingAndSortingRepository = currencyPagingAndSortingRepository;
     }
 
-    public List<Currency> getAllCurrencies(int page) {
-        Page<Currency> currencyPage = currencyPagingAndSortingRepository.findAll(PageRequest.of(page, size));
-        return currencyPage.getContent();
+    public Page<Currency> getAllCurrencies(int page) {
+        return currencyPagingAndSortingRepository.findAll(PageRequest.of(page, size));
     }
 
-    public List<Currency> getCurrenciesByName(String name, int page) {
-        Page<Currency> currencyPage = currencyPagingAndSortingRepository.findByNameContainingIgnoreCase(name,
-                PageRequest.of(page, size));
-        return currencyPage.getContent();
+    public Page<Currency> getAllCurrenciesSorted(String sortBy, int page) {
+        Sort sort = Sort.by(sortBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
+        return currencyPagingAndSortingRepository.findAll(pageable);
     }
 
-    public List<Currency> getCurrenciesByCode(String code, int page) {
-        Page<Currency> currencyPage = currencyPagingAndSortingRepository.findByCodeContainingIgnoreCase(code,
-                PageRequest.of(page, size));
-        return currencyPage.getContent();
+    public Page<Currency> getCurrenciesByField(String field, String value, int page) {
+        return switch (field.toLowerCase()) {
+            case "name" -> currencyPagingAndSortingRepository.findByNameContainingIgnoreCase(value,
+                    PageRequest.of(page, size));
+            case "code" -> currencyPagingAndSortingRepository.findByCodeContainingIgnoreCase(value,
+                    PageRequest.of(page, size));
+            default -> currencyPagingAndSortingRepository.findAll(PageRequest.of(page, size));
+        };
     }
 
     public Currency getCurrencyById(Long id) {

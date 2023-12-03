@@ -7,9 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -26,21 +27,24 @@ public class ExchangeService {
         this.exchangePagingAndSortingRepository = exchangePagingAndSortingRepository;
     }
 
-    public List<Exchange> getAllExchanges(int page) {
-        Page<Exchange> exchangePage = exchangePagingAndSortingRepository.findAll(PageRequest.of(page, size));
-        return exchangePage.getContent();
+    public Page<Exchange> getAllExchanges(int page) {
+        return exchangePagingAndSortingRepository.findAll(PageRequest.of(page, size));
     }
 
-    public List<Exchange> getExchangesByName(String name, int page) {
-        Page<Exchange> exchangePage = exchangePagingAndSortingRepository.findByNameContainingIgnoreCase(name,
-                PageRequest.of(page, size));
-        return exchangePage.getContent();
+    public Page<Exchange> getAllExchangesSorted(String sortBy, int page) {
+        Sort sort = Sort.by(sortBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
+        return exchangePagingAndSortingRepository.findAll(pageable);
     }
 
-    public List<Exchange> getExchangesByCode(String code, int page) {
-        Page<Exchange> exchangePage = exchangePagingAndSortingRepository.findByCodeContainingIgnoreCase(code,
-                PageRequest.of(page, size));
-        return exchangePage.getContent();
+    public Page<Exchange> getExchangesByField(String field, String value, int page) {
+        return switch (field.toLowerCase()) {
+            case "name" -> exchangePagingAndSortingRepository.findByNameContainingIgnoreCase(value,
+                    PageRequest.of(page, size));
+            case "code" -> exchangePagingAndSortingRepository.findByCodeContainingIgnoreCase(value,
+                    PageRequest.of(page, size));
+            default -> exchangePagingAndSortingRepository.findAll(PageRequest.of(page, size));
+        };
     }
 
     public Exchange getExchangeById(Long id) {

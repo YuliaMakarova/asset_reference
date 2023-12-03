@@ -3,7 +3,6 @@ package com.web.makarova.asset_reference.controller;
 import com.web.makarova.asset_reference.entity.Exchange;
 import com.web.makarova.asset_reference.service.ExchangeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,21 +22,35 @@ public class ExchangeController {
 
     @GetMapping("/{page}")
     public ResponseEntity<List<Exchange>> getAllExchanges(@PathVariable int page) {
-        List<Exchange> exchanges = exchangeService.getAllExchanges(page);
-        return new ResponseEntity<>(exchanges, HttpStatus.OK);
-    }
-    @GetMapping("/byName")
-    public ResponseEntity<List<Exchange>> getExchangesByName(@RequestParam String name,
-                                                             @RequestParam(defaultValue = "0") int page) {
-        List<Exchange> exchanges = exchangeService.getExchangesByName(name, page);
+        List<Exchange> exchanges = exchangeService.getAllExchanges(page).getContent();
         return new ResponseEntity<>(exchanges, HttpStatus.OK);
     }
 
-    @GetMapping("/byCode")
-    public ResponseEntity<List<Exchange>> getExchangesByCode(@RequestParam String code,
-                                                             @RequestParam(defaultValue = "0") int page) {
-        List<Exchange> exchanges = exchangeService.getExchangesByCode(code, page);
+    @GetMapping("/sorted")
+    public ResponseEntity<List<Exchange>> getAllExchangesSorted(@RequestParam String sortBy, @RequestParam int page) {
+        List<Exchange> exchanges = exchangeService.getAllExchangesSorted(sortBy, page).getContent();
         return new ResponseEntity<>(exchanges, HttpStatus.OK);
+    }
+
+    @GetMapping("/filter")
+    public ResponseEntity<List<Exchange>> getExchangesByField(@RequestParam String field, @RequestParam String name,
+                                                               @RequestParam(defaultValue = "0") int page) {
+        List<Exchange> exchanges = exchangeService.getExchangesByField(field, name, page).getContent();
+        return new ResponseEntity<>(exchanges, HttpStatus.OK);
+
+    }
+
+    @GetMapping("/countPage")
+    public ResponseEntity<Integer> countPageForAllExchanges() {
+        int countPage = exchangeService.getAllExchanges(0).getTotalPages();
+        return new ResponseEntity<>(countPage, HttpStatus.OK);
+    }
+
+    @GetMapping("/countPage/filter")
+    public ResponseEntity<Integer> countPageForExchangesByField(@RequestParam String field,
+                                                                @RequestParam String name) {
+        int countPage = exchangeService.getExchangesByField(field, name, 0).getTotalPages();
+        return new ResponseEntity<>(countPage, HttpStatus.OK);
     }
 
     @PostMapping

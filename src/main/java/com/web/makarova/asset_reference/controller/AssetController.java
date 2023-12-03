@@ -22,44 +22,33 @@ public class AssetController {
 
     @GetMapping("/{page}")
     public ResponseEntity<List<Asset>> getAllAssets(@PathVariable int page) {
-        List<Asset> assets = assetService.getAllAssets(page);
+        List<Asset> assets = assetService.getAllAssets(page).getContent();
         return new ResponseEntity<>(assets, HttpStatus.OK);
     }
 
-    @GetMapping("/byName")
-    public ResponseEntity<List<Asset>> getAssetsByName(@RequestParam String name,
-                                                       @RequestParam(defaultValue = "0") int page) {
-        List<Asset> assets = assetService.getAssetsByName(name, page);
-        return new ResponseEntity<>(assets, HttpStatus.OK);
-
-    }
-
-    @GetMapping("/byIsin")
-    public ResponseEntity<List<Asset>> getAssetsByIsin(@RequestParam String isin,
-                                                       @RequestParam(defaultValue = "0") int page) {
-        List<Asset> assets = assetService.getAssetsByIsin(isin, page);
+    @GetMapping("/sorted")
+    public ResponseEntity<List<Asset>> getAllAssetsSorted(@RequestParam String sortBy, @RequestParam int page) {
+        List<Asset> assets = assetService.getAllAssetsSorted(sortBy, page).getContent();
         return new ResponseEntity<>(assets, HttpStatus.OK);
     }
 
-    @GetMapping("/byBloombergTicker")
-    public ResponseEntity<List<Asset>> getAssetsByBloombergTicker(@RequestParam String bloombergTicker,
-                                                  @RequestParam(defaultValue = "0") int page) {
-        List<Asset> assets = assetService.getAssetsBloombergTicker(bloombergTicker, page);
+    @GetMapping("/filter")
+    public ResponseEntity<List<Asset>> getAssetsByField(@RequestParam String field, @RequestParam String name,
+                                                        @RequestParam(defaultValue = "0") int page) {
+        List<Asset> assets = assetService.getAssetsByField(field, name, page).getContent();
         return new ResponseEntity<>(assets, HttpStatus.OK);
     }
 
-    @GetMapping("/byCurrencyName")
-    public ResponseEntity<List<Asset>> getAssetsByCurrencyName(@RequestParam String currencyName,
-                                               @RequestParam(defaultValue = "0") int page) {
-        List<Asset> assets = assetService.getAssetsCurrencyName(currencyName, page);
-        return new ResponseEntity<>(assets, HttpStatus.OK);
+    @GetMapping("/countPage")
+    public ResponseEntity<Integer> countPageForAllAssets() {
+        int countPage = assetService.getAllAssets(0).getTotalPages();
+        return new ResponseEntity<>(countPage, HttpStatus.OK);
     }
 
-    @GetMapping("/byExchangeName")
-    public ResponseEntity<List<Asset>> getAssetsByExchangeName(@RequestParam String exchangeName,
-                                               @RequestParam(defaultValue = "0") int page) {
-        List<Asset> assets = assetService.getAssetsExchangeName(exchangeName, page);
-        return new ResponseEntity<>(assets, HttpStatus.OK);
+    @GetMapping("/countPage/filter")
+    public ResponseEntity<Integer> countPageForAssetsByField(@RequestParam String field, @RequestParam String name) {
+        int countPage = assetService.getAssetsByField(field, name, 0).getTotalPages();
+        return new ResponseEntity<>(countPage, HttpStatus.OK);
     }
 
     @PostMapping
