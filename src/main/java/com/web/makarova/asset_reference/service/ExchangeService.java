@@ -1,34 +1,50 @@
 package com.web.makarova.asset_reference.service;
 
 import com.web.makarova.asset_reference.entity.Exchange;
-import com.web.makarova.asset_reference.repository.ExchangeRepository;
+import com.web.makarova.asset_reference.repository.ExchangeCrudRepository;
+import com.web.makarova.asset_reference.repository.ExchangePagingAndSortingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Service
 public class ExchangeService {
-
-    private final ExchangeRepository exchangeRepository;
+    @Value("${page.size}")
+    private int size;
+    private final ExchangeCrudRepository exchangeCrudRepository;
+    private final ExchangePagingAndSortingRepository exchangePagingAndSortingRepository;
 
     @Autowired
-    public ExchangeService(ExchangeRepository exchangeRepository) {
-        this.exchangeRepository = exchangeRepository;
+    public ExchangeService(ExchangeCrudRepository exchangeCrudRepository,
+                           ExchangePagingAndSortingRepository exchangePagingAndSortingRepository) {
+        this.exchangeCrudRepository = exchangeCrudRepository;
+        this.exchangePagingAndSortingRepository = exchangePagingAndSortingRepository;
     }
 
-    public List<Exchange> getAllExchanges() {
-        Iterable<Exchange> exchangesIterable = exchangeRepository.findAll();
-        return StreamSupport
-                .stream(exchangesIterable.spliterator(), false)
-                .collect(Collectors.toList());
+    public List<Exchange> getAllExchanges(int page) {
+        Page<Exchange> exchangePage = exchangePagingAndSortingRepository.findAll(PageRequest.of(page, size));
+        return exchangePage.getContent();
+    }
+
+    public List<Exchange> getExchangesByName(String name, int page) {
+        Page<Exchange> exchangePage = exchangePagingAndSortingRepository.findByNameContainingIgnoreCase(name,
+                PageRequest.of(page, size));
+        return exchangePage.getContent();
+    }
+
+    public List<Exchange> getExchangesByCode(String code, int page) {
+        Page<Exchange> exchangePage = exchangePagingAndSortingRepository.findByCodeContainingIgnoreCase(code,
+                PageRequest.of(page, size));
+        return exchangePage.getContent();
     }
 
     public Exchange getExchangeById(Long id) {
-        Optional<Exchange> optionalExchange = exchangeRepository.findById(id);
+        Optional<Exchange> optionalExchange = exchangeCrudRepository.findById(id);
         return optionalExchange.orElse(null);
     }
 
@@ -36,23 +52,23 @@ public class ExchangeService {
         Exchange exchange = new Exchange();
         exchange.setName(name);
         exchange.setCode(code);
-        return exchangeRepository.save(exchange);
+        return exchangeCrudRepository.save(exchange);
     }
 
     public Exchange updateExchange(Long id, String name, String code) {
-        Optional<Exchange> existingExchange = exchangeRepository.findById(id);
+        Optional<Exchange> existingExchange = exchangeCrudRepository.findById(id);
 
         if (existingExchange.isPresent()) {
             Exchange exchangeToUpdate = existingExchange.get();
             exchangeToUpdate.setName(name);
             exchangeToUpdate.setCode(code);
-            return exchangeRepository.save(exchangeToUpdate);
+            return exchangeCrudRepository.save(exchangeToUpdate);
         } else {
             return null;
         }
     }
 
     public void deleteExchange(Long id) {
-        exchangeRepository.deleteById(id);
+        exchangeCrudRepository.deleteById(id);
     }
 }

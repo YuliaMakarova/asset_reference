@@ -20,9 +20,23 @@ public class CurrencyController {
         this.currencyService = currencyService;
     }
 
-    @GetMapping
-    public ResponseEntity<List<Currency>> getAllCurrencies() {
-        List<Currency> currencies = currencyService.getAllCurrencies();
+    @GetMapping("/{page}")
+    public ResponseEntity<List<Currency>> getAllCurrencies(@PathVariable int page) {
+        List<Currency> currencies = currencyService.getAllCurrencies(page);
+        return new ResponseEntity<>(currencies, HttpStatus.OK);
+    }
+
+    @GetMapping("/byName")
+    public ResponseEntity<List<Currency>> getCurrenciesByName(@RequestParam String name,
+                                                             @RequestParam(defaultValue = "0") int page) {
+        List<Currency> currencies = currencyService.getCurrenciesByName(name, page);
+        return new ResponseEntity<>(currencies, HttpStatus.OK);
+    }
+
+    @GetMapping("/byCode")
+    public ResponseEntity<List<Currency>> getCurrenciesByCode(@RequestParam String code,
+                                                             @RequestParam(defaultValue = "0") int page) {
+        List<Currency> currencies = currencyService.getCurrenciesByCode(code, page);
         return new ResponseEntity<>(currencies, HttpStatus.OK);
     }
 

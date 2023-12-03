@@ -20,9 +20,45 @@ public class AssetController {
         this.assetService = assetService;
     }
 
-    @GetMapping
-    public ResponseEntity<List<Asset>> getAllAssets() {
-        List<Asset> assets = assetService.getAllAssets();
+    @GetMapping("/{page}")
+    public ResponseEntity<List<Asset>> getAllAssets(@PathVariable int page) {
+        List<Asset> assets = assetService.getAllAssets(page);
+        return new ResponseEntity<>(assets, HttpStatus.OK);
+    }
+
+    @GetMapping("/byName")
+    public ResponseEntity<List<Asset>> getAssetsByName(@RequestParam String name,
+                                                       @RequestParam(defaultValue = "0") int page) {
+        List<Asset> assets = assetService.getAssetsByName(name, page);
+        return new ResponseEntity<>(assets, HttpStatus.OK);
+
+    }
+
+    @GetMapping("/byIsin")
+    public ResponseEntity<List<Asset>> getAssetsByIsin(@RequestParam String isin,
+                                                       @RequestParam(defaultValue = "0") int page) {
+        List<Asset> assets = assetService.getAssetsByIsin(isin, page);
+        return new ResponseEntity<>(assets, HttpStatus.OK);
+    }
+
+    @GetMapping("/byBloombergTicker")
+    public ResponseEntity<List<Asset>> getAssetsByBloombergTicker(@RequestParam String bloombergTicker,
+                                                  @RequestParam(defaultValue = "0") int page) {
+        List<Asset> assets = assetService.getAssetsBloombergTicker(bloombergTicker, page);
+        return new ResponseEntity<>(assets, HttpStatus.OK);
+    }
+
+    @GetMapping("/byCurrencyName")
+    public ResponseEntity<List<Asset>> getAssetsByCurrencyName(@RequestParam String currencyName,
+                                               @RequestParam(defaultValue = "0") int page) {
+        List<Asset> assets = assetService.getAssetsCurrencyName(currencyName, page);
+        return new ResponseEntity<>(assets, HttpStatus.OK);
+    }
+
+    @GetMapping("/byExchangeName")
+    public ResponseEntity<List<Asset>> getAssetsByExchangeName(@RequestParam String exchangeName,
+                                               @RequestParam(defaultValue = "0") int page) {
+        List<Asset> assets = assetService.getAssetsExchangeName(exchangeName, page);
         return new ResponseEntity<>(assets, HttpStatus.OK);
     }
 
