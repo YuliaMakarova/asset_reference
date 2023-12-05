@@ -21,35 +21,25 @@ public class CurrencyController {
     }
 
     @GetMapping("/{page}")
-    public ResponseEntity<List<Currency>> getAllCurrencies(@PathVariable int page) {
-        List<Currency> currencies = currencyService.getAllCurrencies(page).getContent();
+    public ResponseEntity<List<Currency>> getCurrencies(
+            @PathVariable int page,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) String sortOrder,
+            @RequestParam(required = false) String filteringField,
+            @RequestParam(required = false) String filteringValue) {
+        List<Currency> currencies = currencyService.getCurrencies(page, sortBy, sortOrder, filteringField, filteringValue)
+                .getContent();
         return new ResponseEntity<>(currencies, HttpStatus.OK);
-    }
-
-    @GetMapping("/sorted")
-    public ResponseEntity<List<Currency>> getAllCurrenciesSorted(@RequestParam String sortBy, @RequestParam int page) {
-        List<Currency> currencies = currencyService.getAllCurrenciesSorted(sortBy, page).getContent();
-        return new ResponseEntity<>(currencies, HttpStatus.OK);
-    }
-
-    @GetMapping("/filter")
-    public ResponseEntity<List<Currency>> getCurrenciesByField(@RequestParam String field, @RequestParam String name,
-                                                       @RequestParam(defaultValue = "0") int page) {
-        List<Currency> currencies = currencyService.getCurrenciesByField(field, name, page).getContent();
-        return new ResponseEntity<>(currencies, HttpStatus.OK);
-
     }
 
     @GetMapping("/countPage")
-    public ResponseEntity<Integer> countPageForAllCurrencies() {
-        int countPage = currencyService.getAllCurrencies(0).getTotalPages();
-        return new ResponseEntity<>(countPage, HttpStatus.OK);
-    }
-
-    @GetMapping("/countPage/filter")
-    public ResponseEntity<Integer> countPageForCurrenciesByField(@RequestParam String field,
-                                                                 @RequestParam String name) {
-        int countPage = currencyService.getCurrenciesByField(field, name, 0).getTotalPages();
+    public ResponseEntity<Integer> getCountPageForCurrencies(
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) String sortOrder,
+            @RequestParam(required = false) String filteringField,
+            @RequestParam(required = false) String filteringValue) {
+        int countPage = currencyService.getCurrencies(0, sortBy, sortOrder, filteringField, filteringValue)
+                .getTotalPages();
         return new ResponseEntity<>(countPage, HttpStatus.OK);
     }
 
@@ -60,7 +50,8 @@ public class CurrencyController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Currency> updateCurrency(@PathVariable Long id, @RequestParam String code, @RequestParam String name) {
+    public ResponseEntity<Currency> updateCurrency(@PathVariable Long id, @RequestParam String code,
+                                                   @RequestParam String name) {
         Currency updatedCurrency = currencyService.updateCurrency(id, code, name);
         return updatedCurrency != null
                 ? new ResponseEntity<>(updatedCurrency, HttpStatus.OK)

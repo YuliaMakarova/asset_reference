@@ -32,30 +32,33 @@ public class AssetService {
         this.currencyService = currencyService;
     }
 
-    public Page<Asset> getAllAssets(int page) {
-        return assetPagingAndSortingRepository.findAll(PageRequest.of(page, size));
-    }
+    public Page<Asset> getAssets(int page, String sortBy, String sortOrder, String field, String value) {
+        Pageable pageable;
+        if (sortBy != null) {
+            pageable = sortOrder != null && sortOrder.equalsIgnoreCase("desc") ?
+                    PageRequest.of(page, size, Sort.by(sortBy).descending()) :
+                    PageRequest.of(page, size, Sort.by(sortBy).ascending());
+        } else {
+            pageable = PageRequest.of(page, size);
+        }
 
-    public Page<Asset> getAllAssetsSorted(String sortBy, int page) {
-        Sort sort = Sort.by(sortBy);
-        Pageable pageable = PageRequest.of(page, size, sort);
-        return assetPagingAndSortingRepository.findAll(pageable);
-    }
-
-    public Page<Asset> getAssetsByField(String field, String value, int page) {
-        return switch (field.toLowerCase()) {
-            case "name" -> assetPagingAndSortingRepository.findByNameContainingIgnoreCase(value,
-                    PageRequest.of(page, size));
-            case "isin" -> assetPagingAndSortingRepository.findByIsinContainingIgnoreCase(value,
-                    PageRequest.of(page, size));
-            case "bloombergticker" -> assetPagingAndSortingRepository.findByBloombergTickerContainingIgnoreCase(value,
-                    PageRequest.of(page, size));
-            case "currency.name" -> assetPagingAndSortingRepository.findByCurrency_NameContainingIgnoreCase(value,
-                    PageRequest.of(page, size));
-            case "exchange.name" -> assetPagingAndSortingRepository.findByExchange_NameContainingIgnoreCase(value,
-                    PageRequest.of(page, size));
-            default -> assetPagingAndSortingRepository.findAll(PageRequest.of(page, size));
-        };
+        if (field != null) {
+            return switch (field.toLowerCase()) {
+                case "name" -> assetPagingAndSortingRepository.findByNameContainingIgnoreCase(value,
+                        PageRequest.of(page, size));
+                case "isin" -> assetPagingAndSortingRepository.findByIsinContainingIgnoreCase(value,
+                        PageRequest.of(page, size));
+                case "bloombergticker" -> assetPagingAndSortingRepository.findByBloombergTickerContainingIgnoreCase(value,
+                        PageRequest.of(page, size));
+                case "currency.name" -> assetPagingAndSortingRepository.findByCurrency_NameContainingIgnoreCase(value,
+                        PageRequest.of(page, size));
+                case "exchange.name" -> assetPagingAndSortingRepository.findByExchange_NameContainingIgnoreCase(value,
+                        PageRequest.of(page, size));
+                default -> assetPagingAndSortingRepository.findAll(PageRequest.of(page, size));
+            };
+        } else {
+            return assetPagingAndSortingRepository.findAll(pageable);
+        }
     }
 
     public Asset createAsset(Long exchangeId, Long currencyId, String isin, String bloombergTicker, String name) {

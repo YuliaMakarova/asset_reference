@@ -21,33 +21,25 @@ public class AssetController {
     }
 
     @GetMapping("/{page}")
-    public ResponseEntity<List<Asset>> getAllAssets(@PathVariable int page) {
-        List<Asset> assets = assetService.getAllAssets(page).getContent();
-        return new ResponseEntity<>(assets, HttpStatus.OK);
-    }
-
-    @GetMapping("/sorted")
-    public ResponseEntity<List<Asset>> getAllAssetsSorted(@RequestParam String sortBy, @RequestParam int page) {
-        List<Asset> assets = assetService.getAllAssetsSorted(sortBy, page).getContent();
-        return new ResponseEntity<>(assets, HttpStatus.OK);
-    }
-
-    @GetMapping("/filter")
-    public ResponseEntity<List<Asset>> getAssetsByField(@RequestParam String field, @RequestParam String name,
-                                                        @RequestParam(defaultValue = "0") int page) {
-        List<Asset> assets = assetService.getAssetsByField(field, name, page).getContent();
+    public ResponseEntity<List<Asset>> getAssets(
+            @PathVariable int page,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) String sortOrder,
+            @RequestParam(required = false) String filteringField,
+            @RequestParam(required = false) String filteringValue) {
+        List<Asset> assets = assetService.getAssets(page, sortBy, sortOrder, filteringField, filteringValue)
+                .getContent();
         return new ResponseEntity<>(assets, HttpStatus.OK);
     }
 
     @GetMapping("/countPage")
-    public ResponseEntity<Integer> countPageForAllAssets() {
-        int countPage = assetService.getAllAssets(0).getTotalPages();
-        return new ResponseEntity<>(countPage, HttpStatus.OK);
-    }
-
-    @GetMapping("/countPage/filter")
-    public ResponseEntity<Integer> countPageForAssetsByField(@RequestParam String field, @RequestParam String name) {
-        int countPage = assetService.getAssetsByField(field, name, 0).getTotalPages();
+    public ResponseEntity<Integer> getCountPageForAssets(
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) String sortOrder,
+            @RequestParam(required = false) String filteringField,
+            @RequestParam(required = false) String filteringValue) {
+        int countPage = assetService.getAssets(0, sortBy, sortOrder, filteringField, filteringValue)
+                .getTotalPages();
         return new ResponseEntity<>(countPage, HttpStatus.OK);
     }
 

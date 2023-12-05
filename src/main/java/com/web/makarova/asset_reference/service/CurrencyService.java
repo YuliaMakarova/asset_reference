@@ -27,24 +27,25 @@ public class CurrencyService {
         this.currencyPagingAndSortingRepository = currencyPagingAndSortingRepository;
     }
 
-    public Page<Currency> getAllCurrencies(int page) {
-        return currencyPagingAndSortingRepository.findAll(PageRequest.of(page, size));
-    }
-
-    public Page<Currency> getAllCurrenciesSorted(String sortBy, int page) {
-        Sort sort = Sort.by(sortBy);
-        Pageable pageable = PageRequest.of(page, size, sort);
-        return currencyPagingAndSortingRepository.findAll(pageable);
-    }
-
-    public Page<Currency> getCurrenciesByField(String field, String value, int page) {
-        return switch (field.toLowerCase()) {
-            case "name" -> currencyPagingAndSortingRepository.findByNameContainingIgnoreCase(value,
-                    PageRequest.of(page, size));
-            case "code" -> currencyPagingAndSortingRepository.findByCodeContainingIgnoreCase(value,
-                    PageRequest.of(page, size));
-            default -> currencyPagingAndSortingRepository.findAll(PageRequest.of(page, size));
-        };
+    public Page<Currency> getCurrencies(int page, String sortBy, String sortOrder, String field, String value) {
+        Pageable pageable;
+        if (sortBy != null) {
+            pageable = sortOrder != null && sortOrder.equalsIgnoreCase("desc") ?
+                    PageRequest.of(page, size, Sort.by(sortBy).descending()) :
+                    PageRequest.of(page, size, Sort.by(sortBy).ascending());
+        } else {
+            pageable = PageRequest.of(page, size);
+        }
+        if (field != null)
+            return switch (field.toLowerCase()) {
+                case "name" -> currencyPagingAndSortingRepository.findByNameContainingIgnoreCase(value,
+                        pageable);
+                case "code" -> currencyPagingAndSortingRepository.findByCodeContainingIgnoreCase(value,
+                        pageable);
+                default -> currencyPagingAndSortingRepository.findAll(pageable);
+            };
+        else
+            return currencyPagingAndSortingRepository.findAll(pageable);
     }
 
     public Currency getCurrencyById(Long id) {

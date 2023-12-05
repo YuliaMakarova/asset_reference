@@ -21,35 +21,25 @@ public class ExchangeController {
     }
 
     @GetMapping("/{page}")
-    public ResponseEntity<List<Exchange>> getAllExchanges(@PathVariable int page) {
-        List<Exchange> exchanges = exchangeService.getAllExchanges(page).getContent();
+    public ResponseEntity<List<Exchange>> getExchanges(
+            @PathVariable int page,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) String sortOrder,
+            @RequestParam(required = false) String filteringField,
+            @RequestParam(required = false) String filteringValue) {
+        List<Exchange> exchanges = exchangeService.getExchanges(page, sortBy, sortOrder, filteringField, filteringValue)
+                .getContent();
         return new ResponseEntity<>(exchanges, HttpStatus.OK);
-    }
-
-    @GetMapping("/sorted")
-    public ResponseEntity<List<Exchange>> getAllExchangesSorted(@RequestParam String sortBy, @RequestParam int page) {
-        List<Exchange> exchanges = exchangeService.getAllExchangesSorted(sortBy, page).getContent();
-        return new ResponseEntity<>(exchanges, HttpStatus.OK);
-    }
-
-    @GetMapping("/filter")
-    public ResponseEntity<List<Exchange>> getExchangesByField(@RequestParam String field, @RequestParam String name,
-                                                               @RequestParam(defaultValue = "0") int page) {
-        List<Exchange> exchanges = exchangeService.getExchangesByField(field, name, page).getContent();
-        return new ResponseEntity<>(exchanges, HttpStatus.OK);
-
     }
 
     @GetMapping("/countPage")
-    public ResponseEntity<Integer> countPageForAllExchanges() {
-        int countPage = exchangeService.getAllExchanges(0).getTotalPages();
-        return new ResponseEntity<>(countPage, HttpStatus.OK);
-    }
-
-    @GetMapping("/countPage/filter")
-    public ResponseEntity<Integer> countPageForExchangesByField(@RequestParam String field,
-                                                                @RequestParam String name) {
-        int countPage = exchangeService.getExchangesByField(field, name, 0).getTotalPages();
+    public ResponseEntity<Integer> getCountPageForExchanges(
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) String sortOrder,
+            @RequestParam(required = false) String filteringField,
+            @RequestParam(required = false) String filteringValue) {
+        int countPage = exchangeService.getExchanges(0, sortBy, sortOrder, filteringField, filteringValue)
+                .getTotalPages();
         return new ResponseEntity<>(countPage, HttpStatus.OK);
     }
 

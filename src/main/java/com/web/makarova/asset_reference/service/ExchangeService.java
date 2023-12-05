@@ -27,24 +27,25 @@ public class ExchangeService {
         this.exchangePagingAndSortingRepository = exchangePagingAndSortingRepository;
     }
 
-    public Page<Exchange> getAllExchanges(int page) {
-        return exchangePagingAndSortingRepository.findAll(PageRequest.of(page, size));
-    }
+    public Page<Exchange> getExchanges(int page, String sortBy, String sortOrder, String field, String value) {
+        Pageable pageable;
+        if (sortBy != null) {
+            pageable = sortOrder != null && sortOrder.equalsIgnoreCase("desc") ?
+                    PageRequest.of(page, size, Sort.by(sortBy).descending()) :
+                    PageRequest.of(page, size, Sort.by(sortBy).ascending());
+        } else {
+            pageable = PageRequest.of(page, size);
+        }
 
-    public Page<Exchange> getAllExchangesSorted(String sortBy, int page) {
-        Sort sort = Sort.by(sortBy);
-        Pageable pageable = PageRequest.of(page, size, sort);
-        return exchangePagingAndSortingRepository.findAll(pageable);
-    }
-
-    public Page<Exchange> getExchangesByField(String field, String value, int page) {
-        return switch (field.toLowerCase()) {
-            case "name" -> exchangePagingAndSortingRepository.findByNameContainingIgnoreCase(value,
-                    PageRequest.of(page, size));
-            case "code" -> exchangePagingAndSortingRepository.findByCodeContainingIgnoreCase(value,
-                    PageRequest.of(page, size));
-            default -> exchangePagingAndSortingRepository.findAll(PageRequest.of(page, size));
-        };
+        if (field != null) {
+            return switch (field.toLowerCase()) {
+                case "name" -> exchangePagingAndSortingRepository.findByNameContainingIgnoreCase(value, pageable);
+                case "code" -> exchangePagingAndSortingRepository.findByCodeContainingIgnoreCase(value, pageable);
+                default -> exchangePagingAndSortingRepository.findAll(pageable);
+            };
+        } else {
+            return exchangePagingAndSortingRepository.findAll(pageable);
+        }
     }
 
     public Exchange getExchangeById(Long id) {
