@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  app:
+    image: 'asset_reference:latest'
+    build:
+      context: .
+    container_name: asset_reference
+    depends_on:
+      - db
+    ports:
+      - "8787:8787"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/assets
+      SPRING_DATASOURCE_USERNAME: win
+      SPRING_DATASOURCE_PASSWORD: winners123
+
+  db:
+    image: 'postgres:latest'
+    container_name: db
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: assets
+      POSTGRES_USER: win
+      POSTGRES_PASSWORD: winners123
