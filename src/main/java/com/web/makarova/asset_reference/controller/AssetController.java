@@ -20,6 +20,12 @@ public class AssetController {
         this.assetService = assetService;
     }
 
+    @GetMapping("/list")
+    public ResponseEntity<List<Asset>> getAllAssets() {
+        List<Asset> assets = assetService.getAllAssets();
+        return new ResponseEntity<>(assets, HttpStatus.OK);
+    }
+
     @GetMapping("/{page}")
     public ResponseEntity<List<Asset>> getAssets(
             @PathVariable int page,

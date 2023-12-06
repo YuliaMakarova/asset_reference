@@ -11,7 +11,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 public class AssetService {
@@ -30,6 +33,13 @@ public class AssetService {
         this.assetPagingAndSortingRepository = assetPagingAndSortingRepository;
         this.exchangeService = exchangeService;
         this.currencyService = currencyService;
+    }
+
+    public List<Asset> getAllAssets() {
+        Iterable<Asset> assetsIterable = assetCrudRepository.findAll();
+        return StreamSupport
+                .stream(assetsIterable.spliterator(), false)
+                .collect(Collectors.toList());
     }
 
     public Page<Asset> getAssets(int page, String sortBy, String sortOrder, String field, String value) {
