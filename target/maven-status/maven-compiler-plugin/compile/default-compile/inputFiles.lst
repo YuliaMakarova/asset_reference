@@ -1,0 +1,16 @@
+D:\Asset reference\src\main\java\com\web\makarova\asset_reference\entity\Currency.java
+D:\Asset reference\src\main\java\com\web\makarova\asset_reference\entity\Asset.java
+D:\Asset reference\src\main\java\com\web\makarova\asset_reference\repository\CurrencyCrudRepository.java
+D:\Asset reference\src\main\java\com\web\makarova\asset_reference\controller\ExchangeController.java
+D:\Asset reference\src\main\java\com\web\makarova\asset_reference\service\CurrencyService.java
+D:\Asset reference\src\main\java\com\web\makarova\asset_reference\repository\AssetPagingAndSortingRepository.java
+D:\Asset reference\src\main\java\com\web\makarova\asset_reference\repository\AssetCrudRepository.java
+D:\Asset reference\src\main\java\com\web\makarova\asset_reference\AssetReferenceApplication.java
+D:\Asset reference\src\main\java\com\web\makarova\asset_reference\repository\ExchangeCrudRepository.java
+D:\Asset reference\src\main\java\com\web\makarova\asset_reference\controller\CurrencyController.java
+D:\Asset reference\src\main\java\com\web\makarova\asset_reference\repository\CurrencyPagingAndSortingRepository.java
+D:\Asset reference\src\main\java\com\web\makarova\asset_reference\entity\Exchange.java
+D:\Asset reference\src\main\java\com\web\makarova\asset_reference\service\AssetService.java
+D:\Asset reference\src\main\java\com\web\makarova\asset_reference\controller\AssetController.java
+D:\Asset reference\src\main\java\com\web\makarova\asset_reference\repository\ExchangePagingAndSortingRepository.java
+D:\Asset reference\src\main\java\com\web\makarova\asset_reference\service\ExchangeService.java

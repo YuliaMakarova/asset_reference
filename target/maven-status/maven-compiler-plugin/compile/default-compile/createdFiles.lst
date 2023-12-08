@@ -1,0 +1,16 @@
+com\web\makarova\asset_reference\controller\CurrencyController.class
+com\web\makarova\asset_reference\service\CurrencyService.class
+com\web\makarova\asset_reference\entity\Exchange.class
+com\web\makarova\asset_reference\entity\Currency.class
+com\web\makarova\asset_reference\repository\CurrencyPagingAndSortingRepository.class
+com\web\makarova\asset_reference\repository\ExchangePagingAndSortingRepository.class
+com\web\makarova\asset_reference\service\AssetService.class
+com\web\makarova\asset_reference\repository\AssetCrudRepository.class
+com\web\makarova\asset_reference\repository\AssetPagingAndSortingRepository.class
+com\web\makarova\asset_reference\repository\ExchangeCrudRepository.class
+com\web\makarova\asset_reference\service\ExchangeService.class
+com\web\makarova\asset_reference\repository\CurrencyCrudRepository.class
+com\web\makarova\asset_reference\AssetReferenceApplication.class
+com\web\makarova\asset_reference\controller\ExchangeController.class
+com\web\makarova\asset_reference\entity\Asset.class
+com\web\makarova\asset_reference\controller\AssetController.class
