@@ -2,7 +2,7 @@ package com.web.makarova.asset_reference.controller;
 
 import com.web.makarova.asset_reference.entity.Exchange;
 import com.web.makarova.asset_reference.service.ExchangeService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,15 +10,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/asset_reference/exchanges")
 public class ExchangeController {
 
     private final ExchangeService exchangeService;
-
-    @Autowired
-    public ExchangeController(ExchangeService exchangeService) {
-        this.exchangeService = exchangeService;
-    }
 
     @GetMapping("/{page}")
     public ResponseEntity<List<Exchange>> getExchanges(

@@ -2,7 +2,7 @@ package com.web.makarova.asset_reference.controller;
 
 import com.web.makarova.asset_reference.entity.Currency;
 import com.web.makarova.asset_reference.service.CurrencyService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,15 +10,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/asset_reference/currencies")
 public class CurrencyController {
 
     private final CurrencyService currencyService;
-
-    @Autowired
-    public CurrencyController(CurrencyService currencyService) {
-        this.currencyService = currencyService;
-    }
 
     @GetMapping("/{page}")
     public ResponseEntity<List<Currency>> getCurrencies(

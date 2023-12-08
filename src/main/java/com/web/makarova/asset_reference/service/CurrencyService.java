@@ -3,7 +3,7 @@ package com.web.makarova.asset_reference.service;
 import com.web.makarova.asset_reference.entity.Currency;
 import com.web.makarova.asset_reference.repository.CurrencyCrudRepository;
 import com.web.makarova.asset_reference.repository.CurrencyPagingAndSortingRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,18 +14,12 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class CurrencyService {
     @Value("${page.size}")
     private int size;
     private final CurrencyCrudRepository currencyCrudRepository;
     private final CurrencyPagingAndSortingRepository currencyPagingAndSortingRepository;
-
-    @Autowired
-    public CurrencyService(CurrencyCrudRepository currencyCrudRepository,
-                           CurrencyPagingAndSortingRepository currencyPagingAndSortingRepository) {
-        this.currencyCrudRepository = currencyCrudRepository;
-        this.currencyPagingAndSortingRepository = currencyPagingAndSortingRepository;
-    }
 
     public Page<Currency> getCurrencies(int page, String sortBy, String sortOrder, String field, String value) {
         Pageable pageable;

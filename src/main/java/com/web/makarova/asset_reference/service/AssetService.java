@@ -3,7 +3,7 @@ package com.web.makarova.asset_reference.service;
 import com.web.makarova.asset_reference.entity.Asset;
 import com.web.makarova.asset_reference.repository.AssetCrudRepository;
 import com.web.makarova.asset_reference.repository.AssetPagingAndSortingRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Service
+@RequiredArgsConstructor
 public class AssetService {
     @Value("${page.size}")
     private int size;
@@ -24,16 +25,6 @@ public class AssetService {
     private final AssetPagingAndSortingRepository assetPagingAndSortingRepository;
     private final CurrencyService currencyService;
     private final ExchangeService exchangeService;
-
-    @Autowired
-    public AssetService(AssetCrudRepository assetCrudRepository, CurrencyService currencyService,
-                        ExchangeService exchangeService,
-                        AssetPagingAndSortingRepository assetPagingAndSortingRepository) {
-        this.assetCrudRepository = assetCrudRepository;
-        this.assetPagingAndSortingRepository = assetPagingAndSortingRepository;
-        this.exchangeService = exchangeService;
-        this.currencyService = currencyService;
-    }
 
     public List<Asset> getAllAssets() {
         Iterable<Asset> assetsIterable = assetCrudRepository.findAll();

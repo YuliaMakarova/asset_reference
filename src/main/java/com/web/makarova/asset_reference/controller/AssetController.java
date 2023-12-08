@@ -2,7 +2,7 @@ package com.web.makarova.asset_reference.controller;
 
 import com.web.makarova.asset_reference.entity.Asset;
 import com.web.makarova.asset_reference.service.AssetService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,15 +10,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/asset_reference/assets")
 public class AssetController {
 
     private final AssetService assetService;
-
-    @Autowired
-    public AssetController(AssetService assetService) {
-        this.assetService = assetService;
-    }
 
     @GetMapping("/list")
     public ResponseEntity<List<Asset>> getAllAssets() {

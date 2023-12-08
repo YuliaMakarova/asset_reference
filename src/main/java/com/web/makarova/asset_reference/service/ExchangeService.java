@@ -3,7 +3,7 @@ package com.web.makarova.asset_reference.service;
 import com.web.makarova.asset_reference.entity.Exchange;
 import com.web.makarova.asset_reference.repository.ExchangeCrudRepository;
 import com.web.makarova.asset_reference.repository.ExchangePagingAndSortingRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,18 +14,12 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class ExchangeService {
     @Value("${page.size}")
     private int size;
     private final ExchangeCrudRepository exchangeCrudRepository;
     private final ExchangePagingAndSortingRepository exchangePagingAndSortingRepository;
-
-    @Autowired
-    public ExchangeService(ExchangeCrudRepository exchangeCrudRepository,
-                           ExchangePagingAndSortingRepository exchangePagingAndSortingRepository) {
-        this.exchangeCrudRepository = exchangeCrudRepository;
-        this.exchangePagingAndSortingRepository = exchangePagingAndSortingRepository;
-    }
 
     public Page<Exchange> getExchanges(int page, String sortBy, String sortOrder, String field, String value) {
         Pageable pageable;
